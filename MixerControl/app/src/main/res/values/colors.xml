@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#01A9F2</color>
+    <color name="colorPrimaryDark">#0187D0</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="colorPowder">#FF8400</color>
+    <color name="colorPesticide">#A2C922</color>
+    <color name="colorAgitator">#5F64BB</color>
+
+    <color name="colorBlink">#BEEAFF</color>
+    <color name="colorStateBlink">#A8A8A8</color>
+
+    <color name="colorDisable">#8D8D8D</color>
+</resources>

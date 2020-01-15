@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="MixingStateView">
+        <attr name="backgroundColor" format="reference|integer"/>
+        <attr name="blinkColor" format="reference|integer"/>
+        <attr name="titleImage" format="reference|integer"/>
+        <attr name="title" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="MotorStateView">
+        <attr name="motorBackColor" format="reference|integer"/>
+        <attr name="motorBlinkColor" format="reference|integer"/>
+        <attr name="motorTitleImage" format="reference|integer"/>
+        <attr name="motorTitle" format="string"/>
+    </declare-styleable>
+
+</resources>

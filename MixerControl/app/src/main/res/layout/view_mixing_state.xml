@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/rl_mixing_view"
+    android:background="#FF8400">
+
+    <ImageView
+        android:id="@+id/iv_mixing_icon"
+        android:layout_width="54dp"
+        android:layout_height="53dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_powder" />
+
+    <TextView
+        android:id="@+id/tv_mixing_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wettable Powder"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:layout_below="@id/iv_mixing_icon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"/>
+
+    <LinearLayout
+        android:id="@+id/ll_setup_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_below="@id/tv_mixing_name"
+        android:layout_marginBottom="16dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_drill"/>
+
+        <TextView
+            android:id="@+id/tv_motor_rotation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:paddingEnd="4dp"
+            android:paddingStart="4dp"
+            tools:text="--"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_spray"
+            android:layout_marginStart="12dp"/>
+
+        <TextView
+            android:id="@+id/tv_water_spray"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="4dp"
+            android:paddingStart="4dp"
+            tools:text="--"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/ll_setup_info">
+
+        <TextView
+            android:id="@+id/tv_motor_rotation_state"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="1dp"
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:text="모터 이동"/>
+
+        <TextView
+            android:id="@+id/tv_spray_water_state"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="1dp"
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:text="물 분사"/>
+
+        <TextView
+            android:id="@+id/tv_motor_return_state"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:text="모터 복귀"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
