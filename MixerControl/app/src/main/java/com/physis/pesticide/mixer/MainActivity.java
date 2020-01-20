@@ -37,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private MotorStateView msvAirPump, msvAgitator;
     private Button btnStart, btnStop;
 
-    private ObjectAnimator anim;
-
     private MQTTClient mqttClient;
     private SetupData setupData;
 
@@ -144,11 +142,11 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.btn_mixing_start:
-                    sendMixingControl(msvPowder.getEnable() ? "1" : "0", msvPesticide.getEnable() ? "1" : "0", "1", "1");
+                    sendMixingControl(msvPowder.getEnable() ? "1" : "0", msvPesticide.getEnable() ? "1" : "0", "1");
                     btnStart.setEnabled(false);
                     break;
                 case R.id.btn_mixing_stop:
-                    sendMixingControl("0", "0", "0", "0");
+                    sendMixingControl("0", "0", "0");
                     break;
                 case R.id.msv_wettable_powder:
                     msvPowder.swapEnable();
@@ -161,8 +159,8 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-    private void sendMixingControl(String powderState, String pesticideState, String airPumpState, String agitatorState){
-        String controlMsg = powderState + pesticideState + airPumpState + agitatorState;
+    private void sendMixingControl(String powderState, String pesticideState, String agitatorState){
+        String controlMsg = powderState + pesticideState + agitatorState;
         mqttClient.publish(SystemEnv.TOPIC_CONTROL, controlMsg);
     }
 

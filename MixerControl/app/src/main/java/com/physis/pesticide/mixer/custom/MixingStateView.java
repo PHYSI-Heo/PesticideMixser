@@ -115,7 +115,11 @@ public class MixingStateView extends RelativeLayout {
     private void startStageBlink(TextView obj){
         stopStageBlink();
         blinkObj = obj;
-        anim = ObjectAnimator.ofInt(blinkObj, "backgroundColor", Color.WHITE, blinkColor, Color.WHITE);
+        anim = ObjectAnimator.ofInt(blinkObj, "backgroundColor",
+                Color.WHITE,
+                getResources().getColor(blinkColor, null),
+                Color.WHITE
+        );
         anim.setDuration(750);
         anim.setEvaluator(new ArgbEvaluator());
         anim.setRepeatCount(Animation.INFINITE);

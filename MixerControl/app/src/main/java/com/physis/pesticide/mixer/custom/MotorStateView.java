@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,7 @@ public class MotorStateView extends LinearLayout {
 
     private int bgColor, blinkColor;
 
-    private ObjectAnimator anim;
+    private ObjectAnimator anim = null;
 
     public MotorStateView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -72,8 +73,13 @@ public class MotorStateView extends LinearLayout {
 
     @SuppressLint("WrongConstant")
     private void startStageBlink(){
-        stopStageBlink();
-        anim = ObjectAnimator.ofInt(itemView, "backgroundColor", bgColor, blinkColor, bgColor);
+        if(anim != null)
+            return;
+        anim = ObjectAnimator.ofInt(itemView, "backgroundColor",
+                getResources().getColor(bgColor, null),
+                getResources().getColor(blinkColor, null),
+                getResources().getColor(bgColor, null)
+        );
         anim.setDuration(750);
         anim.setEvaluator(new ArgbEvaluator());
         anim.setRepeatCount(Animation.INFINITE);

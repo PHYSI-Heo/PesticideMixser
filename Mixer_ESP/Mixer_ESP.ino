@@ -29,6 +29,7 @@ String SEND_SETUP_INFO = "SI";
 String SEND_WIFI_DISCONNECT = "DW";
 String SEND_CONN_MQTT = "CM";
 String SEND_RE_REQ = "RQ";
+String SEND_REFLASH = "RF";
 
 SoftwareSerial swSerial(swRX, swTX);
 WiFiClient wifiClient;
@@ -172,6 +173,8 @@ void subscribeCallbak(char* topic, byte* payload, unsigned int length) {
     writeData(SEND_SETUP_INFO + subData);
   } else if (subTopic.equals(TOPIC_RECV_CON)) {
     writeData(SEND_CON_MSG + subData);
+    delay(100);
+    writeData(SEND_REFLASH);
   }
 }
 
