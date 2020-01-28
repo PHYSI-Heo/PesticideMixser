@@ -54,6 +54,7 @@ public class SetupActivity extends AppCompatActivity {
         showSetupData();
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -62,7 +63,6 @@ public class SetupActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler(){
         @Override

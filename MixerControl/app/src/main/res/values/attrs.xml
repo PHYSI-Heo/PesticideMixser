@@ -6,6 +6,7 @@
         <attr name="blinkColor" format="reference|integer"/>
         <attr name="titleImage" format="reference|integer"/>
         <attr name="title" format="string"/>
+        <attr name="airPumpEnable" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="MotorStateView">

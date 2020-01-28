@@ -7,7 +7,7 @@ public class SystemEnv {
     public static final String BROKER_IP = "13.124.176.173";
     public static final String BROKER_PORT = "1883";
 
-    public static final String DEVICE_ID = "TEMP20";
+    public static final String DEVICE_ID = "TEMP10";
 
     public static final String TOPIC_SETUP_REQ = "PM/SETUP/REQ";
     public static final String TOPIC_SETUP_UPDATE = "PM/SETUP/UPDATE";

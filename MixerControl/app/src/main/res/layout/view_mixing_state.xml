@@ -45,6 +45,7 @@
             android:id="@+id/tv_motor_rotation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
             android:paddingEnd="4dp"
             android:paddingStart="4dp"
@@ -55,13 +56,32 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_spray"
-            android:layout_marginStart="12dp"/>
+            android:src="@drawable/ic_spray"/>
 
         <TextView
             android:id="@+id/tv_water_spray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingEnd="4dp"
+            android:paddingStart="4dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            tools:text="--"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"/>
+
+        <ImageView
+            android:id="@+id/iv_air_pump_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_air"/>
+
+        <TextView
+            android:id="@+id/tv_air_pump"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
             android:paddingEnd="4dp"
             android:paddingStart="4dp"
             tools:text="--"
@@ -103,6 +123,19 @@
             android:text="물 분사"/>
 
         <TextView
+            android:id="@+id/tv_air_pump_state"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="1dp"
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:text="에어 펌프"/>
+
+        <TextView
             android:id="@+id/tv_motor_return_state"
             android:layout_width="0px"
             android:layout_height="wrap_content"
@@ -113,6 +146,8 @@
             android:textStyle="bold"
             android:textSize="12sp"
             android:text="모터 복귀"/>
+
+
 
     </LinearLayout>
 

@@ -23,22 +23,25 @@ public class MixingStateView extends RelativeLayout {
     private static final String TAG = MixingStateView.class.getSimpleName();
 
     private RelativeLayout itemView;
-    private TextView tvTitle, tvMotorProceed, tvSprayWater;
-    private TextView tvMotorProceedState, tvSprayWaterState, tvMotorReturnState;
-    private ImageView ivIcon;
+    private TextView tvTitle, tvMotorProceed, tvSprayWater, tvAirPump;
+    private TextView tvMotorProceedState, tvSprayWaterState, tvMotorReturnState, tvAirPumpState;
+    private ImageView ivIcon, ivAirPumpIcon;
 
-    private String proceedHeight, sprayTime;
+    private String proceedHeight, sprayTime, airPumpTime;
     private boolean enable = true;
     private int bgColor, blinkColor;
+    private boolean airPumpEnable;
 
     private ObjectAnimator anim;
     private TextView blinkObj;
     private char mixState;
+    private String title;
+    private int mainIconRID;
 
     public MixingStateView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initView();
         setTypeArray(getContext().obtainStyledAttributes(attrs, R.styleable.MixingStateView));
+        initView();
     }
 
     private void initView() {
@@ -56,17 +59,29 @@ public class MixingStateView extends RelativeLayout {
         tvSprayWaterState = findViewById(R.id.tv_spray_water_state);
         tvMotorReturnState = findViewById(R.id.tv_motor_return_state);
 
+        tvAirPump = findViewById(R.id.tv_air_pump);
+        tvAirPumpState = findViewById(R.id.tv_air_pump_state);
+        ivAirPumpIcon = findViewById(R.id.iv_air_pump_icon);
+
+        if(!airPumpEnable){
+            ivAirPumpIcon.setVisibility(GONE);
+            tvAirPump.setVisibility(GONE);
+            tvAirPumpState.setVisibility(GONE);
+        }
+
         ivIcon = findViewById(R.id.iv_mixing_icon);
+
+        tvTitle.setText(title);
+        itemView.setBackgroundResource(bgColor);
+        ivIcon.setImageResource(mainIconRID);
     }
 
     private void setTypeArray(TypedArray typedArray) {
         bgColor = typedArray.getResourceId(R.styleable.MixingStateView_backgroundColor, R.color.colorAccent);
         blinkColor = typedArray.getResourceId(R.styleable.MixingStateView_blinkColor, R.color.colorBlink);
-        itemView.setBackgroundResource(bgColor);
-        String title = typedArray.getString(R.styleable.MixingStateView_title);
-        tvTitle.setText(title);
-        int icon = typedArray.getResourceId(R.styleable.MixingStateView_titleImage, R.drawable.ic_water);
-        ivIcon.setImageResource(icon);
+        title = typedArray.getString(R.styleable.MixingStateView_title);
+        mainIconRID = typedArray.getResourceId(R.styleable.MixingStateView_titleImage, R.drawable.ic_water);
+        airPumpEnable = typedArray.getBoolean(R.styleable.MixingStateView_airPumpEnable, false);
         typedArray.recycle();
     }
 
@@ -84,11 +99,14 @@ public class MixingStateView extends RelativeLayout {
     }
 
     @SuppressLint("SetTextI18n")
-    public void setMixingData(String proceedHeight, String sprayTime){
+    public void setMixingData(String proceedHeight, String sprayTime, String airPumpTime){
         this.proceedHeight = proceedHeight;
         this.sprayTime = sprayTime;
+        this.airPumpTime = airPumpTime;
         tvMotorProceed.setText(this.proceedHeight + " Cm");
         tvSprayWater.setText(SystemEnv.convertTimeUnit(sprayTime));
+        if(airPumpTime != null)
+            tvAirPump.setText(SystemEnv.convertTimeUnit(airPumpTime));
     }
 
     @SuppressLint("WrongConstant")
@@ -104,6 +122,9 @@ public class MixingStateView extends RelativeLayout {
                 startStageBlink(tvSprayWaterState);
                 break;
             case '3':
+                startStageBlink(tvAirPump);
+                break;
+            case '4':
                 startStageBlink(tvMotorReturnState);
                 break;
             default:

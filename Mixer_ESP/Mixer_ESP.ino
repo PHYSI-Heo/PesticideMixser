@@ -9,13 +9,14 @@ const String AP_SSID      = "U+Net4C63";
 const String AP_PASSWORD  = "6000214821";
 const String MQTT_IP      = "13.124.176.173";
 const int MQTT_PORT       = 1883;
-const String DEVICE_ID = "TEMP20";
+
+const String DEVICE_ID = "TEMP10";
 // Pub
-const String TOPIC_SETUP_REQ = "PM/SETUP/REQ";
-const String TOPIC_SEND_STATE = "PM/STATE/TEMP20";
+String TOPIC_SETUP_REQ = "PM/SETUP/REQ";
+String TOPIC_SEND_STATE = "PM/STATE/" + DEVICE_ID;
 // Sub
-const String TOPIC_SETUP_RES = "PM/SETUP/TEMP20";
-const String TOPIC_RECV_CON = "PM/CONTROL/TEMP20";
+String TOPIC_SETUP_RES = "PM/SETUP/" + DEVICE_ID;
+String TOPIC_RECV_CON = "PM/CONTROL/" + DEVICE_ID;
 
 // Receive Header
 String AP_CONN_STATE = "AC";
@@ -174,7 +175,7 @@ void subscribeCallbak(char* topic, byte* payload, unsigned int length) {
   } else if (subTopic.equals(TOPIC_RECV_CON)) {
     writeData(SEND_CON_MSG + subData);
     delay(100);
-    writeData(SEND_REFLASH);
+//    writeData(SEND_REFLASH);
   }
 }
 

@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQ_SETUP_CODE = 2020;
 
     private MixingStateView msvPowder, msvPesticide;
-    private MotorStateView msvAirPump, msvAgitator;
+    private MotorStateView msvAgitator;
     private Button btnStart, btnStop;
 
     private MQTTClient mqttClient;
@@ -83,9 +83,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQ_SETUP_CODE && resultCode == RESULT_OK){
-            msvPowder.setMixingData(setupData.getPowderMotorProceed(), setupData.getPowderWaterSpray());
-            msvPesticide.setMixingData(setupData.getPesticideMotorProceed(), setupData.getPesticideWaterSpray());
-            msvAirPump.setTime(SystemEnv.convertTimeUnit(setupData.getAirPumpTime()));
+            msvPowder.setMixingData(setupData.getPowderMotorProceed(), setupData.getPowderWaterSpray(), setupData.getAirPumpTime());
+            msvPesticide.setMixingData(setupData.getPesticideMotorProceed(), setupData.getPesticideWaterSpray(), null);
             msvAgitator.setTime(SystemEnv.convertTimeUnit(setupData.getAgitatorTime()));
         }
     }
@@ -116,21 +115,19 @@ public class MainActivity extends AppCompatActivity {
                     assert message != null;
                     if(topic.equals(SystemEnv.TOPIC_SETUP_RES)){
                         setupData.setSetupData(message);
-                        msvPowder.setMixingData(setupData.getPowderMotorProceed(), setupData.getPowderWaterSpray());
-                        msvPesticide.setMixingData(setupData.getPesticideMotorProceed(), setupData.getPesticideWaterSpray());
-                        msvAirPump.setTime(SystemEnv.convertTimeUnit(setupData.getAirPumpTime()));
+                        msvPowder.setMixingData(setupData.getPowderMotorProceed(), setupData.getPowderWaterSpray(), setupData.getAirPumpTime());
+                        msvPesticide.setMixingData(setupData.getPesticideMotorProceed(), setupData.getPesticideWaterSpray(), null);
                         msvAgitator.setTime(SystemEnv.convertTimeUnit(setupData.getAgitatorTime()));
                     }else if(topic.equals(SystemEnv.TOPIC_STATE)){
                         message = message.substring(2);
-                        boolean  controlEnable = message.equals("0000");
+                        boolean  controlEnable = message.equals("000");
                         btnStart.setEnabled(controlEnable);
                         msvPowder.setEnabled(controlEnable);
                         msvPesticide.setEnabled(controlEnable);
 
                         msvPowder.showBlink(message.charAt(0));
                         msvPesticide.showBlink(message.charAt(1));
-                        msvAirPump.showBlink(message.charAt(2));
-                        msvAgitator.showBlink(message.charAt(3));
+                        msvAgitator.showBlink(message.charAt(2));
                     }
                     break;
             }
@@ -178,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
         btnStop = findViewById(R.id.btn_mixing_stop);
         btnStop.setOnClickListener(clickListener);
 
-        msvAirPump = findViewById(R.id.msv_air_pump);
         msvAgitator = findViewById(R.id.msv_agitator);
 
         btnStart.setEnabled(false);
