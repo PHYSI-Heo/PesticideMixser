@@ -75,7 +75,7 @@ long stateLEDInterval = 1000;
 unsigned long airPumpStartTime;
 unsigned long airPumpTimeLimit = 5 * 1000;
 unsigned long agitatorStartTime;
-unsigned long agitatorTimeLimit = 5 * 1000 * 60;
+unsigned long agitatorTimeLimit = 5 * 1000; //  * 60;
 
 // Action State
 int airPumpAction = 0;
@@ -88,7 +88,6 @@ bool mqttConnected = false;
 
 void setup() {
   Serial.begin(115200);
-
   swSerial.begin(115200);
   delay(1000);
 
@@ -129,15 +128,15 @@ void setup() {
   digitalWrite(STATUS_LED, HIGH);
 
   // Material 0 Index = Powder
-  material[0].motorMoving = 5;
-  material[0].sprayTimeLimit = 3 * 1000;
+  material[0].motorMoving = 3;
+  material[0].sprayTimeLimit = 5 * 1000;
   material[0].valvePin = POWDER_VALVE;
   material[0].dirPin = PW_MOTOR_DIR;
   material[0].clkPin = PW_MOTOR_CLK;
 
   // Material 0 Index = Pesticide
-  material[1].motorMoving = 5;
-  material[1].sprayTimeLimit = 3 * 1000;
+  material[1].motorMoving = 3;
+  material[1].sprayTimeLimit = 5 * 1000;
   material[1].valvePin = PESTICIDE_VALVE;
   material[1].dirPin = PT_MOTOR_DIR;
   material[1].clkPin = PT_MOTOR_CLK;
@@ -150,6 +149,10 @@ void setup() {
     Serial.println(i);
     delay(1000);
   }
+
+  //  recvData = "$282,DC111#";
+  //  recvData = "$281,DC101#";
+  //  recvData = "$281,DC011#";
 }
 
 void loop() {
@@ -203,12 +206,12 @@ void MaterialController(int index) {
         pushStateMessage();
         rotationMotro(index, true);
         material[index].motorCnt++;
-        Serial.print(F("## [ Start Motor ] Index : "));
+        Serial.print(F("# Start Motor / "));
         Serial.print(index);
-        Serial.print(F(" // Count.."));
+        Serial.print(F(" / Count.."));
         Serial.println(material[index].motorCnt);
       }
-      material[index].stage == 2;
+      material[index].stage = 2;
     } else if (material[index].stage == 2) {                        // Spray Water
       unsigned long mSec = millis();
       if (material[index].sprayStartTime == 0) {
@@ -216,30 +219,36 @@ void MaterialController(int index) {
         digitalWrite(material[index].valvePin , LOW);
         digitalWrite(PUMP_MOTOR, LOW);
 
-        Serial.print(F("## [[ "));
+        Serial.print(F("# Water Spray / "));
         Serial.print(index);
-        Serial.println(F(" ]] Start Water Spray.."));
+        Serial.println(F(" / On.."));
       }
       if (mSec - material[index].sprayStartTime >= material[index].sprayTimeLimit) {
         digitalWrite(material[index].valvePin, HIGH);
-        material[index].stage = 4;
+        material[index].stage = 3;
         delay(10);
 
-        Serial.print(F("> [[ "));
+        Serial.print(F("# Water Spray / "));
         Serial.print(index);
-        Serial.println(F(" ]] Stop Water Spray.."));
-        StopPumpMotor();
-        if (index == 0) {
-          material[index].stage = 3;
-          airPumpAction = 1;
-          airPumpController();
+        Serial.println(F(" / Off.."));
+
+        if (material[0].stage == 2 || material[1].stage == 2) {
+          return;
         }
+        digitalWrite(PUMP_MOTOR, HIGH);
+        Serial.println(F("# Water Pump # Off.."));
       }
     } else if (material[index].stage == 4) {                          // Moving Return
       int checkIndex = index == 0 ? 1 : 0;
       if (material[checkIndex].action && material[checkIndex].stage != 4)
         return;
       returnMaterialMotor(index);
+    } else if (material[index].stage == 3) {
+      if (index == 0) {
+        airPumpAction = 1;
+      } else {
+        material[index].stage = 4;
+      }
     }
   } else {
     digitalWrite(material[index].valvePin, HIGH);
@@ -254,22 +263,15 @@ void returnMaterialMotor(int index) {
     pushStateMessage();
     rotationMotro(index, false);
     material[index].motorCnt--;
-    Serial.print(F("## [ Return Motor ] Index : "));
+    Serial.print(F("# Return Motor / "));
     Serial.print(index);
-    Serial.print(F(" // Count.."));
+    Serial.print(F(" / Count.."));
     Serial.println(material[index].motorCnt);
   }
   material[index].stage = 0;
   material[index].action = 0;
 }
 
-void StopPumpMotor() {
-  if (material[0].stage == 2 || material[1].stage == 2) {
-    return;
-  }
-  digitalWrite(PUMP_MOTOR, HIGH);
-  Serial.println(F("> [[ Water Pump Motor ]] Stop.."));
-}
 
 void airPumpController() {
   if (airPumpAction) {
@@ -277,12 +279,12 @@ void airPumpController() {
     if (airPumpStartTime == 0) {
       airPumpStartTime = mSec;
       digitalWrite(AIR_PUMP, LOW);
-      Serial.println(F("> [[ Air Pump ]] Start Motor.."));
+      Serial.println(F("# Air Pump On.."));
     }
     if (mSec - airPumpStartTime >= airPumpTimeLimit) {
       airPumpAction = airPumpStartTime = 0;
       digitalWrite(AIR_PUMP, HIGH);
-      Serial.println(F("> [[ Air Pump ]] Stop Motor.."));
+      Serial.println(F("# Air Pump Off.."));
       material[0].stage = 4;
     }
   } else {
@@ -296,12 +298,12 @@ void agitatorController() {
     if (agitatorStartTime == 0) {
       agitatorStartTime = mSec;
       digitalWrite(AGITATOR_MOTOR, LOW);
-      Serial.println(F("> [[ Agitator ]] Start Motor.."));
+      Serial.println(F("# Agitator On.."));
     }
     if (mSec - agitatorStartTime >= agitatorTimeLimit) {
       agitatorAction = agitatorStartTime = 0;
       digitalWrite(AGITATOR_MOTOR, HIGH);
-      Serial.println(F("> [[ Agitator ]] Stop Motor.."));
+      Serial.println(F("# Agitator Off.."));
     }
   } else {
     digitalWrite(AGITATOR_MOTOR, HIGH);
@@ -322,18 +324,16 @@ void pushStateMessage() {
 
 void startMixer() {
   if (material[0].action == 0 && material[1].action == 0 && agitatorAction == 0) {
-    Serial.println("# Start Mixing..");
+    Serial.println("# (Push) Start Button..");
     digitalWrite(STATUS_LED, LOW);
     material[0].action = material[1].action = agitatorAction = 1;
-    material[0].stage = 1;
-    material[0].sprayStartTime = 0;
-    material[1].stage = 1;
-    material[1].sprayStartTime = 0;
+    material[0].stage = material[1].stage = 1;
+    material[0].sprayStartTime = material[1].sprayStartTime = 0;
   }
 }
 
 void stopMixer() {
-  Serial.println("# Stop Mixing..");
+  Serial.println("# (Push) Stop Button..");
   digitalWrite(PUMP_MOTOR, HIGH);
   material[0].action = material[1].action = agitatorAction = airPumpAction = 0;
   agitatorStartTime = airPumpStartTime = 0;
@@ -349,7 +349,7 @@ void readMessage() {
     delay(1);
   }
   if (recvData != "") {
-    Serial.print(F("# Recv Msg : "));
+    Serial.print(F("# Recv Msg >> "));
     Serial.println(recvData);
     if (confirmData(recvData)) {
       messageHandler();
@@ -364,21 +364,21 @@ void readMessage() {
 void messageHandler() {
   if (recvData.equals(RECV_WIFI_DISCONNECT)) {
     mqttConnected = false;
-    Serial.println(F(">> Wifi Disconnected.."));
+    Serial.println(F("# Wifi Disconnected.."));
   } else if (recvData.equals(RECV_CONN_MQTT)) {
     mqttConnected = true;
-    Serial.println(F(">> Mqtt Connected.."));
+    Serial.println(F("# Mqtt Connected.."));
     writeData(REQ_SETUP_INFO);
   } else if (recvData.equals(RECV_RE_REQ)) {
     writeData(pushData);
   } else if (recvData.startsWith(RECV_SETUP_INFO)) {
     setSettingValues();
   } else if (recvData.startsWith(RECV_CON_MSG)) {
-    setControlValue();
+    setControlValues();
   }
 }
 
-void setControlValue() {
+void setControlValues() {
   material[0].action = String(recvData[2]).toInt();
   material[1].action = String(recvData[3]).toInt();
   agitatorAction = String(recvData[4]).toInt();
@@ -387,19 +387,15 @@ void setControlValue() {
     digitalWrite(PUMP_MOTOR, HIGH);
     airPumpAction = 0;
   } else {
-    if (!digitalRead(STATUS_LED))
-      return;
+    //    if (!digitalRead(STATUS_LED))
+    //      return;
     digitalWrite(STATUS_LED, LOW);
   }
 
-  if (material[0].action) {
-    material[0].stage = 1;
-    material[0].sprayStartTime = 0;
-  }
-  if (material[1].action) {
-    material[1].stage = 1;
-    material[1].sprayStartTime = 0;
-  }
+  material[0].stage = material[0].action;
+  material[0].sprayStartTime = 0;
+  material[1].stage = material[1].action;
+  material[1].sprayStartTime = 0;
 
   Serial.print("# Action >> Powder : ");
   Serial.print(material[0].action);
