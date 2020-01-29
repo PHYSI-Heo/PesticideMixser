@@ -75,7 +75,7 @@ long stateLEDInterval = 1000;
 unsigned long airPumpStartTime;
 unsigned long airPumpTimeLimit = 5 * 1000;
 unsigned long agitatorStartTime;
-unsigned long agitatorTimeLimit = 5 * 1000; //  * 60;
+unsigned long agitatorTimeLimit = 5 * 1000 * 60;
 
 // Action State
 int airPumpAction = 0;
@@ -198,11 +198,17 @@ void rotationMotro(int index, bool isMoving) {
 
 
 // Stage Info.
-// 0 = Stop, 1 = Start , 2 = Spray Water, 3 = Air Pump, 4 = Wait Air Off, 5 = Return Motor, 6 = Moving Motor
+// 0 = Stop, 1 = Start , 2 = Spray Water, 3 = Air Pump, 
+// 4 = Wait Air Off, 5 = Return Motor, 6 = Moving Motor, 
 void MaterialController(int index) {
   if (material[index].action) {
-    if (material[index].stage == 1) {                                // Moving Motor
-      while (material[index].motorCnt < material[index].motorMoving) {
+    if (material[index].stage == 1 || material[index].stage == 6) {    // Moving Motor
+
+      if (index == 1 && (material[0].action && material[0].stage != 2)) {
+        return;
+      }
+      
+      if (material[index].motorCnt < material[index].motorMoving) {
         material[index].stage = 6;
         pushStateMessage();
         rotationMotro(index, true);
@@ -211,10 +217,17 @@ void MaterialController(int index) {
         Serial.print(index);
         Serial.print(F(" / Count.."));
         Serial.println(material[index].motorCnt);
+      } else {
+        material[index].stage = 2;
+        delay(10);
       }
-      material[index].stage = 2;
-      delay(10);
     } else if (material[index].stage == 2) {                        // Spray Water
+      
+      if ((material[0].action && material[0].stage == 6) ||
+          (material[1].action && material[1].stage == 6)) {
+        return;
+      }
+      
       unsigned long mSec = millis();
       if (material[index].sprayStartTime == 0) {
         material[index].sprayStartTime = mSec;
@@ -241,9 +254,11 @@ void MaterialController(int index) {
         Serial.println(F("# Water Pump # Off.."));
       }
     } else if (material[index].stage == 4) {                          // Moving Return
+      
       int checkIndex = index == 0 ? 1 : 0;
       if (material[checkIndex].action && material[checkIndex].stage != 4)
         return;
+      
       material[index].stage = 5;
       returnMaterialMotor(index);
     } else if (material[index].stage == 3) {
@@ -274,7 +289,6 @@ void returnMaterialMotor(int index) {
   material[index].stage = 0;
   material[index].action = 0;
 }
-
 
 void airPumpController() {
   if (airPumpAction) {
@@ -436,7 +450,7 @@ void setSettingValues() {
   material[1].motorMoving = infos[2];
   material[1].sprayTimeLimit = infos[3] * 1000;
   airPumpTimeLimit = infos[4] * 1000;
-  agitatorTimeLimit = infos[5] * 1000;  // * 60;
+  agitatorTimeLimit = infos[5] * 1000 * 60;
 
   Serial.print(F("# Setting Infos : "));
   Serial.print(material[0].motorMoving);

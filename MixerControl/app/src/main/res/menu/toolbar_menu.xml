@@ -7,4 +7,10 @@
         android:icon="@drawable/ic_setting"
         android:title="Setting"
         app:showAsAction="ifRoom"/>
+
+<!--    <item-->
+<!--        android:id="@+id/action_change_id"-->
+<!--        android:icon="@drawable/ic_key"-->
+<!--        android:title="Change ID"-->
+<!--        app:showAsAction="ifRoom"/>-->
 </menu>

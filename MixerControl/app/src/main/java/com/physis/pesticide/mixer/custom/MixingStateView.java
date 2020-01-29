@@ -115,16 +115,16 @@ public class MixingStateView extends RelativeLayout {
             return;
         mixState = stage;
         switch (stage){
-            case '1':
+            case '6':
                 startStageBlink(tvMotorProceedState);
                 break;
             case '2':
                 startStageBlink(tvSprayWaterState);
                 break;
             case '3':
-                startStageBlink(tvAirPump);
+                startStageBlink(tvAirPumpState);
                 break;
-            case '4':
+            case '5':
                 startStageBlink(tvMotorReturnState);
                 break;
             default:
