@@ -285,7 +285,6 @@ void MaterialController(int index) {
       }
     }
   } else {
-    digitalWrite(PUMP_MOTOR, HIGH);
     digitalWrite(material[index].valvePin, HIGH);
     digitalWrite(material[index].clkPin, HIGH);
     returnMaterialMotor(index);
@@ -386,7 +385,7 @@ void stopMixer() {
     return;
   }
   Serial.println("# (Push) Stop Button..");
-  digitalWrite(PUMP_MOTOR, HIGH);
+  digitalWrite(PUMP_MOTOR, HIGH);  
   material[0].action = material[1].action = agitatorAction = airPumpAction = 0;
   agitatorStartTime = airPumpStartTime = 0;
 }
