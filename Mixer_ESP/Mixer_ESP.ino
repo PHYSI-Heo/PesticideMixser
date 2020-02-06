@@ -10,7 +10,7 @@ const String AP_PASSWORD  = "6000214821";
 const String MQTT_IP      = "13.124.176.173";
 const int MQTT_PORT       = 1883;
 
-const String DEVICE_ID = "TEMP10";
+const String DEVICE_ID = "TEMP10";    //TEMP10
 // Pub
 String TOPIC_SETUP_REQ = "PM/SETUP/REQ";
 String TOPIC_SEND_STATE = "PM/STATE/" + DEVICE_ID;

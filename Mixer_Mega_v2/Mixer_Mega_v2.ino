@@ -100,7 +100,7 @@ void setup() {
   pinMode(PESTICIDE_VALVE, OUTPUT);
   pinMode(STATUS_LED, OUTPUT);
 
-  pinMode(START_BUTTON, INPUT);
+  pinMode(START_BUTTON, INPUT_PULLDOWN);
   pinMode(STOP_BUTTON, INPUT_PULLDOWN);
 
   pinMode(PW_MOTOR_DIR, OUTPUT);
@@ -385,7 +385,7 @@ void stopMixer() {
     return;
   }
   Serial.println("# (Push) Stop Button..");
-  digitalWrite(PUMP_MOTOR, HIGH);  
+  digitalWrite(PUMP_MOTOR, HIGH);
   material[0].action = material[1].action = agitatorAction = airPumpAction = 0;
   agitatorStartTime = airPumpStartTime = 0;
 }
